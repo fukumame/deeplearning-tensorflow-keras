@@ -70,11 +70,15 @@ class EarlyStopping():
         self.verbose = verbose
 
     def validate(self, loss):
+        # 自分自身が保持するloss(損失関数の値)の値より、引数で与えられたlossの値のほうが大きかった場合
         if self._loss < loss:
+            # stepを一つ加算
             self._step += 1
+            # stepがしきい値を超えた場合
             if self._step > self.patience:
                 if self.verbose:
                     print('early stopping')
+                # early stoppingをtrueとして返す。
                 return True
         else:
             self._step = 0
