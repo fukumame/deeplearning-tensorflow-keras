@@ -19,6 +19,8 @@ def inference(x, keep_prob, n_in, n_hiddens, n_out):
         return tf.Variable(initial)
 
     # 入力層 - 隠れ層、隠れ層 - 隠れ層
+    # enumerateはindexつきで、要素を獲得することが可能
+    # つまり、iは0, 1, 2とカウントアップしていく
     for i, n_hidden in enumerate(n_hiddens):
         if i == 0:
             input = x
@@ -41,6 +43,9 @@ def inference(x, keep_prob, n_in, n_hiddens, n_out):
 
 
 def loss(y, t):
+    # clip_by_valueの第2引数は値の最小値で第3引数は最大値
+    # つまり、yの取りうる値を、1e-10から1.0の値に制限している
+    # http://qiita.com/ikki8412/items/3846697668fc37e3b7e0
     cross_entropy = \
         tf.reduce_mean(-tf.reduce_sum(
                        t * tf.log(tf.clip_by_value(y, 1e-10, 1.0)),
@@ -162,8 +167,8 @@ if __name__ == '__main__':
     ax_loss.plot(range(epochs), history['val_loss'],
                  label='loss', color='gray')
     plt.xlabel('epochs')
-    # plt.show()
-    plt.savefig('mnist_tensorflow.eps')
+    plt.show()
+    # plt.savefig('mnist_tensorflow.eps')
 
     '''
     予測精度の評価
