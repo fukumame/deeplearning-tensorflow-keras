@@ -49,6 +49,7 @@ def loss(y, t):
 
 
 def training(loss):
+    # モメンタム法によるパラメータの更新
     optimizer = tf.train.MomentumOptimizer(0.01, 0.9)
     train_step = optimizer.minimize(loss)
     return train_step
@@ -73,7 +74,25 @@ if __name__ == '__main__':
     indices = np.random.permutation(range(n))[:N]  # ランダムにN枚を選択
 
     X = mnist.data[indices]
+    # 以下はXの正則化のための前処理
     X = X / 255.0
+    # Xの平均値からの差を出している。
+    # X.mean(axis=1)は平均値であり、reshape(len(X), 1) とすることで、30000行 1列の行列に変形している
+    '''
+    X.mean(axis=1)は、2次元配列の2次元目の平均を取り(つまり各文字データごとの平均値)、以下の通りの配列となる
+    array([ 0.06412065,  0.16931773,  0.14013105, ...,  0.11306523,
+            0.09011104,  0.17332933])
+
+    X.mean(axis=1).reshape(len(X), 1)とすることで、上記を30000行 1列の行列に変形している
+    array([[ 0.06412065],
+       [ 0.16931773],
+       [ 0.14013105],
+       ...,
+       [ 0.11306523],
+       [ 0.09011104],
+       [ 0.17332933]])
+    その上で、行列のブロードキャストの機能を用いて、平均値からの差分を出している
+    '''
     X = X - X.mean(axis=1).reshape(len(X), 1)
     y = mnist.target[indices]
     Y = np.eye(10)[y.astype(int)]  # 1-of-K 表現に変換

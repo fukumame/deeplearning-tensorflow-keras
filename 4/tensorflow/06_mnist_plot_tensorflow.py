@@ -157,12 +157,19 @@ if __name__ == '__main__':
 
     '''
     学習の進み具合を可視化
+    historyの値はこんな感じ
+    {'val_loss': [2.1558669, 0.81269699, 0.51436442, 0.40503612, 0.34004447, 0.30241248, 0.26999786, 0.25391555, ...,],
+     'val_acc': [0.26725, 0.76924998, 0.85075003, 0.88725001, 0.90200001, ...]}
     '''
     plt.rc('font', family='serif')
     fig = plt.figure()
+    # add_subplotはグラフ領域を1x1に分割し、その1番目の領域に表示するということ
+    # http://minus9d.hatenablog.com/entry/2016/04/20/230646
     ax_acc = fig.add_subplot(111)
+    # 第1引数はx軸、第2引数はy軸の値を表す
     ax_acc.plot(range(epochs), history['val_acc'],
                 label='acc', color='black')
+    # 2つめの軸を追加
     ax_loss = ax_acc.twinx()
     ax_loss.plot(range(epochs), history['val_loss'],
                  label='loss', color='gray')
