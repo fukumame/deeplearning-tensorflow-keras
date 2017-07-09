@@ -28,7 +28,7 @@ h = tf.nn.sigmoid(tf.matmul(x, W) + b)
 # 隠れ層 - 出力層
 # 2行1列の行列 (つまり、入力2で出力1)
 V = tf.Variable(tf.truncated_normal([2, 1]))
-c = tf.Variable(tf.zeros([1]))
+c = tf.Variable(tf.zeros([1,1]))
 y = tf.nn.sigmoid(tf.matmul(h, V) + c)
 
 # 2値の場合のクロスエントロピー誤差
