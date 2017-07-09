@@ -27,13 +27,16 @@ Y = np.concatenate((Y1, Y2, Y3), axis=0)
 '''
 モデル設定
 '''
-# 2行3列の行列
+# 2行3列の行列 [[0, 0, 0], [0, 0, 0]]
 W = tf.Variable(tf.zeros([M, K]))
-# 1行3列の行列
-b = tf.Variable(tf.zeros([K]))
+# 1行3列の配列 [[0, 0, 0]]
+b = tf.Variable(tf.zeros([1, K]))
 
+# n行2列の行列
 # [[1,3], [3,6], ...] といった配列を想定
 x = tf.placeholder(tf.float32, shape=[None, M])
+
+# n行3列の行列
 # [[1,0,1], [0,0,1], ...]といった配列を想定
 t = tf.placeholder(tf.float32, shape=[None, K])
 
@@ -112,3 +115,5 @@ print(classified)
 print()
 print('output probability:')
 print(prob)
+
+print(sess.run(tf.zeros([1, K])))

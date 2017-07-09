@@ -40,6 +40,10 @@ cross_entropy = - tf.reduce_sum(t * tf.log(y) + (1 - t) * tf.log(1 - y))
 train_step = tf.train.GradientDescentOptimizer(0.05).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.to_float(tf.greater(y, 0.5)), t)
 
+# correct_predictionは 予測結果が正解ラベルと一致しているかどうかを bool型で返す
+# 例えば [True, True, False, True]など
+# tf.castは、第二引数で渡された型に変換するが、この場合、[1.0, 1.0, 0.0, 1.0]というように変換される
+# この平均を取ることで精度が出る。この場合、 3/4 = 0.75
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 '''
