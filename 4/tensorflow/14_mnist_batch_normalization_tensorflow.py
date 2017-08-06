@@ -11,7 +11,13 @@ tf.set_random_seed(1234)
 
 def inference(x, n_in, n_hiddens, n_out):
     def weight_variable(shape):
-        initial = np.sqrt(2.0 / shape[0]) * tf.truncated_normal(shape)
+        # Heの初期値による重みの初期化
+        # http://qiita.com/m-hayashi/items/02065a2e2ec3e2269e0b#he%E3%81%AE%E5%88%9D%E6%9C%9F%E5%80%A4
+        # shape[0]は入力層、shape[1]は出力層の次元数
+        # tf.truncated_normal(shape) は shape=[2, 3]、つまり入力層のノード数が2, 隠れ層のノード数が3の場合
+        #array([[ 1.33867319, -0.05720098,  1.47962537],
+        #    [ 1.51797757, -1.85726716, -0.00898161]])
+        initial = tf.truncated_normal(shape) * np.sqrt(2.0 / shape[0])
         return tf.Variable(initial)
 
     def bias_variable(shape):
@@ -20,8 +26,18 @@ def inference(x, n_in, n_hiddens, n_out):
 
     def batch_normalization(shape, x):
         eps = 1e-8
+        # このbetaとgammaが学習させるべきパラメータ
         beta = tf.Variable(tf.zeros(shape))
         gamma = tf.Variable(tf.ones(shape))
+
+        '''
+        入力ベクトルの各要素について、平均と分散を求める (2番めの引数はaxis)
+        具体的には [[x11, x12], [x21, x22], [x31, x32]]という入力データの場合
+        [(x11 + x21 + x31)/3, (x12 + x22 + x32)/3]　が平均値のベクトルとなる
+        http://qiita.com/mytk0u0/items/c71f0d1ba434644a5f68
+        https://www.tensorflow.org/api_docs/python/tf/nn/moments
+        for simple batch normalization pass axes=[0] (batch only).
+        '''
         mean, var = tf.nn.moments(x, [0])
         return gamma * (x - mean) / tf.sqrt(var + eps) + beta
 
